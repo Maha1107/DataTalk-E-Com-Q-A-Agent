@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GenAI Q&A</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 50px; }
+        .container { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        input[type=text] { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #response { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ask a Question about E-commerce Data</h2>
+        <input type="text" id="questionInput" placeholder="e.g., What is my total sales?">
+        <button onclick="askQuestion()">Submit</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        async function askQuestion() {
+            const question = document.getElementById("questionInput").value;
+            const responseDiv = document.getElementById("response");
+
+            const res = await fetch('http://127.0.0.1:8000/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question })
+            });
+
+            const data = await res.json();
+            responseDiv.innerHTML = `
+                <p><strong>SQL:</strong> ${data.sql_query}</p>
+                <p><strong>Answer:</strong> ${JSON.stringify(data.result)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
